@@ -1,2 +1,2 @@
-# UCM_CSE_111
+# UCM_CSE_111_Labs
  Database System
