@@ -19,22 +19,13 @@
     (select maker from product where type = 'laptop') 
     and maker not in (select maker from product where type = 'printer');
 
---3 FIX IT SOMEHOW
-    select percomp.maker, pc.model, laptop.model, (pc.price + laptop.price)
+--3 DONE
+    select percomp.maker, pc.model, laptop.model, max(pc.price + laptop.price)
     from product percomp, product lap, pc, laptop
     where percomp.maker = lap.maker
     and percomp.model = pc.model
     and lap.model = laptop.model
     group by percomp.maker;
-  
-
-    select maker,model, type
-    from product;
-    select model, price 
-    from pc;
-    select model, price
-    from laptop;
-
  
 --4 DONE
     select screen
@@ -62,4 +53,3 @@
     where product.model = printer.model
     group by maker
     having count(printer.model) > 1;
-
