@@ -12,5 +12,5 @@ Query 11: PASS
 Query 12: PASS
 Query 13: PASS
 Query 14: PASS
-Query 15: FAIL
-Total score: 14
+Query 15: PASS
+Total score: 15
