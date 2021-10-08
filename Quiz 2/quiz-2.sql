@@ -57,6 +57,23 @@ group by pc.model
 having pc.price < min(laptop.price);
 
 
+
+select pc.model, pc.price
+from pc,
+(
+
+select min(laptop.price) as minprice
+from laptop
+
+) as minlapprice
+where pc.price < minlapprice.minprice
+group by pc.model;
+
+
+
+
+
+
 select maker
 from product, laptop
 where product.model = laptop.model 
