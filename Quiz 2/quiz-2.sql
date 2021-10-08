@@ -19,24 +19,6 @@ EXCEPT
     from Product
     where type = 'laptop';
 
-select maker
-from product
-where type = 'pc';
-select maker 
-from product
-where type = 'laptop';
-
-
-select P1.maker, P1.model, P2.model,max(pc.price+printer.price)
-from Product P1 join Product P2
-    on P1.maker = P2.maker,
-    pc,printer
-where
-    P1.type = 'pc' and
-    P2.type = 'printer'
-    AND P1.model = pc.model
-    AND P2.model = printer.model
-group by p1.maker;
 
 select percomp.maker, pc.model, printer.model, max(pc.price + printer.price)
     from product percomp, product lap, pc, printer
@@ -51,12 +33,6 @@ from laptop
 group by hd
 having count(hd) > 1;
 
-select pc.model, pc.price
-from pc,laptop
-group by pc.model
-having pc.price < min(laptop.price);
-
-
 
 select pc.model, pc.price
 from pc,
@@ -68,8 +44,6 @@ from laptop
 ) as minlapprice
 where pc.price < minlapprice.minprice
 group by pc.model;
-
-
 
 
 
