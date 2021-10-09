@@ -8,7 +8,7 @@
 
 select distinct maker
     from product, laptop
-    where product.model = laptop.model AND laptop.screen > 16 AND laptop.price < 2000;
+    where product.model = laptop.model AND laptop.price < 2000 AND laptop.screen > 16 ;
 
 
 select maker
@@ -20,12 +20,14 @@ EXCEPT
     where type = 'laptop';
 
 
-select percomp.maker, pc.model, printer.model, max(pc.price + printer.price)
-    from product percomp, product lap, pc, printer
-    where percomp.maker = lap.maker
-    and percomp.model = pc.model
-    and lap.model = printer.model
-    group by percomp.maker;
+select PCMaker.maker, pc.model, printer.model, max(pc.price + printer.price)
+    from Product PCMaker, Product PrinterMaker, pc, printer
+    where PCMaker.maker = PrinterMaker.maker
+    and PCMaker.model = pc.model
+    and PrinterMaker.model = printer.model
+    group by PCMaker.maker;
+
+
 
 
 select hd
@@ -41,8 +43,8 @@ from pc,
 select min(laptop.price) as minprice
 from laptop
 
-) as minlapprice
-where pc.price < minlapprice.minprice
+) as minlaptopprice
+where pc.price < minlaptopprice.minprice
 group by pc.model;
 
 
