@@ -1,8 +1,17 @@
 --SQLite
+
+with totalLineItemPrice AS(
 SELECT n_name, total(l_extendedprice) as totalPrice
-FROM nation, customer, orders, lineitem
-WHERE c_nationkey = n_nationkey AND c_custkey = o_custkey 
-AND o_orderkey = l_orderkey AND strftime('%Y', l_shipdate) == '1994'
+FROM nation, supplier, lineitem
+WHERE s_nationkey = n_nationkey 
+AND s_suppkey = l_suppkey
+AND strftime('%Y', l_shipdate) = '1994'
 GROUP BY n_name
-ORDER BY totalPrice DESC
---LIMIT 1
+)
+
+SELECT totalLineItemPrice.n_name
+FROM totalLineItemPrice
+GROUP BY totalLineItemPrice.n_name
+ORDER BY totalLineItemPrice.totalPrice DESC
+LIMIT 1
+
