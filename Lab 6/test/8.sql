@@ -2,7 +2,7 @@
 
 SELECT COUNT(DISTINCT c_name)
 FROM customer, orders as o1
-WHERE c_custkey = o_custkey
+WHERE c_custkey = o1.o_custkey
 
 AND NOT EXISTS(
 
