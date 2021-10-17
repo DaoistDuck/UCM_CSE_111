@@ -29,4 +29,4 @@ WITH cusAmerican AS(
   AND l_partkey = cusAmerican.p_partkey
   AND l_partkey = p1.p_partkey
   
- --using code from the TA
+ --using code from the TA as a base
