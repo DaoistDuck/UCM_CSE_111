@@ -118,30 +118,30 @@ def populateTable(_conn):
         
         # WareHouse ID Finish^
         # WareHouse Nation Start V
-        for row in rows:
-            nameSql = """SELECT n_name, count(l_linenumber) as totalNum, n_nationkey
-                        FROM supplier, lineitem, customer, orders, nation
-                        WHERE c_nationkey = n_nationkey
-                        AND c_custkey = o_custkey
-                        AND o_orderkey = l_orderkey
-                        AND s_suppkey = l_suppkey
-                        AND s_name = '{}'
-                        GROUP BY n_name
-                        ORDER BY totalNum DESC, n_name ASC
-                        LIMIT 2
-                        """.format(row[0])
-            cur2 = _conn.cursor()
-            cur2.execute(nameSql)
-            rows2 = cur2.fetchall()
-            for row2 in rows2:
-                print(row2[0])
-                print(row2[1])
-                print(row2[2])
-                sql3 = """ INTO warehouse(w_name, w_nationkey)
-                    VALUES('{}___{}', {})""".format(row[0], row2[0], row2[2])
-                #INSERT INTO does not change existing data
-                #need to use Update 
-                _conn.execute(sql3)
+        # for row in rows:
+        #     nameSql = """SELECT n_name, count(l_linenumber) as totalNum, n_nationkey
+        #                 FROM supplier, lineitem, customer, orders, nation
+        #                 WHERE c_nationkey = n_nationkey
+        #                 AND c_custkey = o_custkey
+        #                 AND o_orderkey = l_orderkey
+        #                 AND s_suppkey = l_suppkey
+        #                 AND s_name = '{}'
+        #                 GROUP BY n_name
+        #                 ORDER BY totalNum DESC, n_name ASC
+        #                 LIMIT 2
+        #                 """.format(row[0])
+        #     cur2 = _conn.cursor()
+        #     cur2.execute(nameSql)
+        #     rows2 = cur2.fetchall()
+        #     for row2 in rows2:
+        #         print(row2[0])
+        #         print(row2[1])
+        #         print(row2[2])
+        #         sql3 = """ INTO warehouse(w_name, w_nationkey)
+        #             VALUES('{}___{}', {})""".format(row[0], row2[0], row2[2])
+        #         #INSERT INTO does not change existing data
+        #         #need to use Update 
+        #         _conn.execute(sql3)
         
         #WareHouse Nation End ^
 
