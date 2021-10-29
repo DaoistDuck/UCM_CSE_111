@@ -328,14 +328,40 @@ SELECT "17---------";
 .headers on
 --put your code here
 
-
-    SELECT country, COUNT(launched)
-    FROM Ships, Classes
-    WHERE Ships.class = Classes.class
+    WITH launched19111920 AS(
+    SELECT country as tmpcountry, COUNT(launched) as count
+    FROM Classes
+    LEFT JOIN Ships ON Classes.class = Ships.class
+    AND launched >= 1911
+    AND launched <= 1920
+    GROUP BY country
+    ), launched19211930 AS(
+    SELECT country as tmpcountry, COUNT(launched) as count
+    FROM Classes
+    LEFT JOIN Ships ON Classes.class = Ships.class
     AND launched >= 1921
     AND launched <= 1930
     GROUP BY country
-    
+    ), launched19311940 AS(
+    SELECT country as tmpcountry, COUNT(launched) as count
+    FROM Classes
+    LEFT JOIN Ships ON Classes.class = Ships.class
+    AND launched >= 1931
+    AND launched <= 1940
+    GROUP BY country
+    ), launched19411950 AS(
+    SELECT country as tmpcountry, COUNT(launched) as count
+    FROM Classes
+    LEFT JOIN Ships ON Classes.class = Ships.class
+    AND launched >= 1941
+    AND launched <= 1950
+    GROUP BY country
+    ) 
+    SELECT launched19111920.tmpcountry, launched19111920.count as '1911-1920', launched19211930.count as '1921-1930', launched19311940.count as '1931-1940', launched19411950.count as '1941-1950'
+    FROM launched19111920, launched19211930, launched19311940, launched19411950
+    WHERE launched19111920.tmpcountry = launched19211930.tmpcountry
+    AND launched19211930.tmpcountry = launched19311940.tmpcountry
+    AND launched19311940.tmpcountry = launched19411950.tmpcountry
 
 
 ;
