@@ -112,17 +112,10 @@ SELECT "4----------";
 
 INSERT INTO Outcomes(ship, battle, result)
     SELECT Ships.name, 'Denmark Strait', 'damaged'
-    FROM Ships
-    WHERE Ships.launched <= 1920;
-
-DELETE FROM Outcomes
-WHERE ship IN (
-    SELECT ship
-    FROM Outcomes
-    WHERE Outcomes.battle = 'Denmark Strait'
-    GROUP BY Outcomes.ship
-    HAVING COUNT(Outcomes.ship) > 1
-);
+    FROM Ships, Outcomes
+    WHERE Ships.name NOT IN(SELECT Outcomes.ship FROM Outcomes WHERE Outcomes.battle = 'Denmark Strait')
+    AND Ships.launched <= 1920
+    GROUP BY Ships.name
 
 ;
 .headers off
@@ -145,14 +138,14 @@ SELECT "6----------";
 .headers on
 --put your code here go back to see if i make code better
 
-SELECT Classes.country as country , COUNT(result) as numCount
+SELECT Classes.country AS country, COUNT(result) AS numCount
 FROM Classes, Outcomes, Ships
 WHERE Classes.class = Ships.class
 AND Ships.name = Outcomes.ship
 AND result = 'damaged'
 GROUP BY Classes.country
 ORDER BY numCount ASC
-LIMIT 2;
+LIMIT 2
 
 ;
 .headers off
@@ -196,7 +189,7 @@ SELECT "9----------";
 .headers on
 --put your code here
 
-SELECT bcType.bccountry, bbType.bb, bcType.bc
+SELECT bcType.bccountry, bbType.bb as BBType, bcType.bc as BCType
 FROM 
 (
 SELECT country as bbcountry, count(type) as bb
@@ -227,7 +220,7 @@ WHERE Classes.class IN(
     SELECT Classes.class
     FROM Classes, Ships
     WHERE Classes.class = Ships.class
-    AND Ships.launched > 1940
+    AND Ships.launched >= 1940
 );
 
 ;
