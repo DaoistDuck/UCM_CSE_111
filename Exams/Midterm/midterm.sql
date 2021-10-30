@@ -1,6 +1,6 @@
 SELECT "1----------";
 .headers on
---put your code here I looked at Lab 1 and modified the code
+--put your code here 
 
 --Create Table for Classes
 CREATE TABLE Classes(
@@ -37,7 +37,7 @@ CREATE TABLE Outcomes(
 
 SELECT "2----------";
 .headers on
---put your code here The code I modified from was from 12-modification.sql
+--put your code here 
 
 --Inserts for Classes
 INSERT INTO Classes VALUES('Bismarck', 'bb' , 'Germany', 8, 15, 42000);
@@ -73,7 +73,7 @@ INSERT INTO Ships VALUES('Wisconsin','Iowa', 1940);
 INSERT INTO Ships VALUES('Yamato','Yamato', 1941);
 
 --Inserts for Battles
-INSERT INTO Battles VALUES('Denmark Strait', '1914-05-24');
+INSERT INTO Battles VALUES('Denmark Strait', '1941-05-24');
 INSERT INTO Battles VALUES('Guadalcanal', '1942-11-15');
 INSERT INTO Battles VALUES('North Cape', '1943-12-26');
 INSERT INTO Battles VALUES('Surigao Strait', '1944-10-25');
@@ -136,15 +136,18 @@ GROUP BY Classes.country;
 
 SELECT "6----------";
 .headers on
---put your code here go back to see if i make code better
+--put your code here
 
-SELECT Classes.country AS country, COUNT(result) AS numCount
+
+SELECT minDamagedShips.country
+FROM (SELECT Classes.country AS country, COUNT(result) AS numDamagedShips
 FROM Classes, Outcomes, Ships
 WHERE Classes.class = Ships.class
 AND Ships.name = Outcomes.ship
 AND result = 'damaged'
-GROUP BY Classes.country
-ORDER BY numCount ASC
+GROUP BY Classes.country) AS minDamagedShips
+GROUP BY minDamagedShips.country
+ORDER BY minDamagedShips.numDamagedShips ASC
 LIMIT 2
 
 ;
@@ -155,16 +158,16 @@ SELECT "7----------";
 --put your code here
 
 DELETE FROM Outcomes
-WHERE ship IN(
-    SELECT ship
+WHERE Outcomes.ship IN(
+    SELECT Outcomes.ship
     FROM Outcomes, Classes, Ships
     WHERE Outcomes.ship = Ships.name
     AND Ships.class = Classes.class
     AND Outcomes.battle = 'Denmark Strait'
     GROUP BY Outcomes.ship
     HAVING Classes.country = 'Japan'
-) AND battle IN(
-    SELECT battle
+) AND Outcomes.battle IN(
+    SELECT Outcomes.battle
     FROM Outcomes
     WHERE Outcomes.battle = 'Denmark Strait'
 );
@@ -176,9 +179,9 @@ SELECT "8----------";
 .headers on
 --put your code here
 
-SELECT ship
+SELECT Outcomes.ship
 FROM Outcomes
-WHERE Outcomes.result = 'damaged'
+WHERE Outcomes.result = 'damaged' OR Outcomes.result = 'ok'
 GROUP BY Outcomes.ship
 HAVING COUNT(Outcomes.result) > 1;
 
@@ -188,25 +191,23 @@ HAVING COUNT(Outcomes.result) > 1;
 SELECT "9----------";
 .headers on
 --put your code here
-
-SELECT bcType.bccountry, bbType.bb as BBType, bcType.bc as BCType
-FROM 
-(
-SELECT country as bbcountry, count(type) as bb
+WITH bbType AS(
+SELECT country AS bbcountry, count(type) AS bb
 FROM Classes, Ships
 WHERE Classes.class = Ships.class
 AND Classes.type = 'bb'
 GROUP BY country
-) as bbType ,
-(
-SELECT country as bccountry, count(type) as bc
+), bcType AS(
+SELECT country AS bccountry, count(type) AS bc
 FROM Classes, Ships
 WHERE Classes.class = Ships.class
 AND Classes.type = 'bc'
 GROUP BY country
-) as bcType
-WHERE bcType.bccountry = bbType.bbcountry
-GROUP BY bcType.bccountry;
+)
+SELECT bbType.bbcountry as country, bbType.bb AS numBB, bcType.bc AS numBC
+FROM bbType, bcType
+WHERE bbType.bbcountry = bcType.bccountry
+GROUP BY bbType.bbcountry;
 
 ;
 .headers off
@@ -234,7 +235,7 @@ SELECT Classes.class
 FROM Classes, Ships
 WHERE Classes.class = Ships.class
 GROUP BY Classes.class
-HAVING COUNT(Classes.class) == 2
+HAVING COUNT(Ships.name) == 2
 
 ;
 .headers off
@@ -247,12 +248,12 @@ SELECT Classes.class
 FROM Classes, Ships
 WHERE Classes.class = Ships.class
 AND Ships.name NOT IN (
-    SELECT ship
+    SELECT Outcomes.ship
     FROM Outcomes
     WHERE Outcomes.result = 'sunk'
 )
 GROUP BY Classes.class
-HAVING COUNT(Classes.class) == 2
+HAVING COUNT(Ships.name) == 2
 
 ;
 .headers off
@@ -275,10 +276,10 @@ SELECT "14---------";
 .headers on
 --put your code here
 
-SELECT country, total(numGuns)
+SELECT Classes.country, TOTAL(Classes.numGuns) AS totalNumGuns
 FROM Classes, Ships
 WHERE Classes.class = Ships.class
-GROUP BY country
+GROUP BY Classes.country
 
 ;
 .headers off
@@ -287,17 +288,16 @@ SELECT "15---------";
 .headers on
 --put your code here
 
-SELECT Classes.country, total(numGuns) - newNumGuns.numCount
-FROM Classes, Ships, (
-SELECT country, COUNT(result) as numCount
-FROM Classes, Ships, Outcomes
+SELECT Classes.country, TOTAL(Classes.numGuns) - damagedNumGuns.numCount AS newTotalNumGuns
+FROM Classes, Ships,(
+SELECT Classes.country AS country, COUNT(result) AS numCount
+FROM Classes
+LEFT JOIN Ships ON Classes.class = Ships.class
+LEFT JOIN Outcomes ON Outcomes.ship = Ships.name AND Outcomes.result = 'damaged'
+GROUP BY Classes.country
+) AS damagedNumGuns
 WHERE Classes.class = Ships.class
-AND Ships.name = Outcomes.ship
-AND Outcomes.result = 'damaged'
-GROUP BY country
-) as newNumGuns
-WHERE Classes.class = Ships.class
-AND Classes.country = newNumGuns.country
+AND Classes.country = damagedNumGuns.country
 GROUP BY Classes.country
 
 ;
@@ -322,40 +322,39 @@ SELECT "17---------";
 --put your code here
 
     WITH launched19111920 AS(
-    SELECT country as tmpcountry, COUNT(launched) as count
+    SELECT Classes.country AS tmpcountry, COUNT(Ships.launched) AS count
     FROM Classes
     LEFT JOIN Ships ON Classes.class = Ships.class
-    AND launched >= 1911
-    AND launched <= 1920
-    GROUP BY country
+    AND Ships.launched >= 1911
+    AND Ships.launched <= 1920
+    GROUP BY Classes.country
     ), launched19211930 AS(
-    SELECT country as tmpcountry, COUNT(launched) as count
+    SELECT Classes.country AS tmpcountry, COUNT(Ships.launched) AS count
     FROM Classes
     LEFT JOIN Ships ON Classes.class = Ships.class
-    AND launched >= 1921
-    AND launched <= 1930
-    GROUP BY country
+    AND Ships.launched >= 1921
+    AND Ships.launched <= 1930
+    GROUP BY Classes.country
     ), launched19311940 AS(
-    SELECT country as tmpcountry, COUNT(launched) as count
+    SELECT Classes.country AS tmpcountry, COUNT(Ships.launched) AS count
     FROM Classes
     LEFT JOIN Ships ON Classes.class = Ships.class
-    AND launched >= 1931
-    AND launched <= 1940
-    GROUP BY country
+    AND Ships.launched >= 1931
+    AND Ships.launched <= 1940
+    GROUP BY Classes.country
     ), launched19411950 AS(
-    SELECT country as tmpcountry, COUNT(launched) as count
+    SELECT Classes.country AS tmpcountry, COUNT(Ships.launched) AS count
     FROM Classes
     LEFT JOIN Ships ON Classes.class = Ships.class
-    AND launched >= 1941
-    AND launched <= 1950
-    GROUP BY country
+    AND Ships.launched >= 1941
+    AND Ships.launched <= 1950
+    GROUP BY Classes.country
     ) 
-    SELECT launched19111920.tmpcountry, launched19111920.count as '1911-1920', launched19211930.count as '1921-1930', launched19311940.count as '1931-1940', launched19411950.count as '1941-1950'
+    SELECT launched19111920.tmpcountry AS country, launched19111920.count AS '1911-1920', launched19211930.count AS '1921-1930', launched19311940.count AS '1931-1940', launched19411950.count AS '1941-1950'
     FROM launched19111920, launched19211930, launched19311940, launched19411950
     WHERE launched19111920.tmpcountry = launched19211930.tmpcountry
     AND launched19211930.tmpcountry = launched19311940.tmpcountry
     AND launched19311940.tmpcountry = launched19411950.tmpcountry
-
 
 ;
 .headers off
