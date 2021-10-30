@@ -138,16 +138,13 @@ SELECT "6----------";
 .headers on
 --put your code here
 
-
-SELECT minDamagedShips.country
-FROM (SELECT Classes.country AS country, COUNT(result) AS numDamagedShips
+SELECT Classes.country AS country
 FROM Classes, Outcomes, Ships
 WHERE Classes.class = Ships.class
 AND Ships.name = Outcomes.ship
-AND result = 'damaged'
-GROUP BY Classes.country) AS minDamagedShips
-GROUP BY minDamagedShips.country
-ORDER BY minDamagedShips.numDamagedShips ASC
+AND Outcomes.result = 'damaged'
+GROUP BY Classes.country
+ORDER BY COUNT(Outcomes.result) ASC
 LIMIT 2
 
 ;
