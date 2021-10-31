@@ -173,9 +173,11 @@ def populateTable(_conn):
 
 
 def Q1(_conn):
-    # https://www.w3schools.com/python/ref_string_format.asp
     print("++++++++++++++++++++++++++++++++++")
     print("Q1")
+
+    Q1Output = open("output/1.out", "w")
+    Q1Write = open("output/1.out", "w")
 
     try:
         sql = """SELECT w_warehousekey AS wId, w_name AS wName, w_capacity AS wCap, w_suppkey AS sId, w_nationkey AS nId
@@ -186,22 +188,28 @@ def Q1(_conn):
         header = '{:>10} {:<40} {:<17} {:<10} {:<10}'.format(
             "wId", "wName", "wCap", "sId", "nId")
         print(header)
+        Q1Write.write(header + '\n')
         rows = cursor.fetchall()
         for row in rows:
             data = '{:>10} {:<40} {:<10} {:>10} {:>10}'.format(
                 row[0], row[1], row[2], row[3], row[4])
             print(data)
+            Q1Write.write(data + '\n')
 
     except Error as e:
         _conn.rollback()
         print(e)
 
+    Q1Write.close()
     print("++++++++++++++++++++++++++++++++++")
 
 
 def Q2(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Q2")
+
+    Q2Output = open("output/2.out", "w")
+    Q2Write = open("output/2.out", "w")
 
     try:
         sql = """SELECT n_name, COUNT(w_warehousekey), SUM(w_capacity)
@@ -214,15 +222,19 @@ def Q2(_conn):
         header = '{:<20} {:>10} {:>10}'.format(
             "nation", "numW", "totCap")
         print(header)
+        Q2Write.write(header + '\n')
         rows = cursor.fetchall()
         for row in rows:
             data = '{:<20} {:>10} {:>10}'.format(
                 row[0], row[1], row[2])
             print(data)
+            Q2Write.write(data + '\n')
 
     except Error as e:
         _conn.rollback()
         print(e)
+
+    Q2Write.close()
 
     print("++++++++++++++++++++++++++++++++++")
 
@@ -231,28 +243,38 @@ def Q3(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Q3")
 
+    Q3Output = open("output/3.out", "w")
+    Q3Write = open("output/3.out", "w")
+
+    input = open("input/3.in", "r")
+    dataList = input.read().splitlines()
+
     try:
         sql = """SELECT s_name, n2.n_name, w_name
                     FROM supplier, nation as n1, warehouse, nation as n2
                     WHERE w_nationkey = n1.n_nationkey
-                    AND n1.n_name = 'JAPAN' --this needs to be changed
+                    AND n1.n_name = '{}'
                     AND s_suppkey = w_suppkey
                     AND s_nationkey = n2.n_nationkey
                     GROUP BY s_name
-                    ORDER BY s_name ASC"""
+                    ORDER BY s_name ASC""".format(dataList[0])
         cursor = _conn.cursor()
         cursor.execute(sql)
         header = '{:<20} {:<20} {:<10}'.format(
             'supplier', 'nation', 'warehouse')
         print(header)
+        Q3Write.write(header + '\n')
         rows = cursor.fetchall()
         for row in rows:
             data = '{:<20} {:<20} {:<10}'.format(
                 row[0], row[1], row[2])
             print(data)
+            Q3Write.write(data + '\n')
     except Error as e:
         _conn.rollback()
         print(e)
+
+    Q3Write.close()
 
     print("++++++++++++++++++++++++++++++++++")
 
@@ -261,28 +283,38 @@ def Q4(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Q4")
 
+    Q4Output = open("output/4.out", "w")
+    Q4Write = open("output/4.out", "w")
+
+    input = open("input/4.in", "r")
+    dataList = input.read().splitlines()
+
     try:
         sql = """SELECT w_name, w_capacity
                     FROM warehouse, nation, region
                     WHERE w_nationkey = n_nationkey
                     AND n_regionkey = r_regionkey
-                    AND r_name = 'ASIA' --this needs to be changed
-                    AND w_capacity > 2000 --this needs to be changed
+                    AND r_name = '{}'
+                    AND w_capacity > {}
                     GROUP BY w_name
-                    ORDER BY w_capacity DESC"""
+                    ORDER BY w_capacity DESC""".format(dataList[0], dataList[1])
         cursor = _conn.cursor()
         cursor.execute(sql)
         header = '{:<10} {:>30}'.format(
             'warehouse', 'capacity',)
         print(header)
+        Q4Write.write(header + '\n')
         rows = cursor.fetchall()
         for row in rows:
             data = '{:<36} {:<20}'.format(
                 row[0], row[1])
             print(data)
+            Q4Write.write(data + '\n')
     except Error as e:
         _conn.rollback()
         print(e)
+
+    Q4Write.close()
 
     print("++++++++++++++++++++++++++++++++++")
 
@@ -291,12 +323,18 @@ def Q5(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Q5")
 
+    Q5Output = open("output/5.out", "w")
+    Q5Write = open("output/5.out", "w")
+
+    input = open("input/5.in", "r")
+    dataList = input.read().splitlines()
+
     try:
         sql = """WITH regionTotalCapacity AS(
                     SELECT r_name as name, SUM(w_capacity) as sumCap
                     FROM supplier, nation as n1, warehouse, nation as n2, region
                     WHERE w_nationkey = n1.n_nationkey
-                    AND n2.n_name = 'UNITED STATES' --this needs to be changed
+                    AND n2.n_name = '{}'
                     AND s_suppkey = w_suppkey
                     AND s_nationkey = n2.n_nationkey
                     AND n1.n_regionkey = r_regionkey
@@ -306,20 +344,24 @@ def Q5(_conn):
                     FROM region
                     LEFT JOIN regionTotalCapacity ON r_name = regionTotalCapacity.name
                     GROUP BY r_name
-                    ORDER BY r_name ASC"""
+                    ORDER BY r_name ASC""".format(dataList[0])
         cursor = _conn.cursor()
         cursor.execute(sql)
         header = '{:<15} {:>10}'.format(
             'region', 'capacity',)
         print(header)
+        Q5Write.write(header + '\n')
         rows = cursor.fetchall()
         for row in rows:
             data = '{:<15} {:>10}'.format(
                 row[0], row[1])
             print(data)
+            Q5Write.write(data + '\n')
     except Error as e:
         _conn.rollback()
         print(e)
+
+    Q5Write.close()
 
     print("++++++++++++++++++++++++++++++++++")
 
@@ -330,9 +372,9 @@ def main():
     # create a database connection
     conn = openConnection(database)
     with conn:
-        # dropTable(conn)
-        # createTable(conn)
-        # populateTable(conn)
+        dropTable(conn)
+        createTable(conn)
+        populateTable(conn)
 
         Q1(conn)
         Q2(conn)
@@ -355,11 +397,15 @@ if __name__ == '__main__':
 # contains key and value
 # hash map
 # hashes the key to find value
-# https://www.kite.com/python/answers/how-to-update-a-dictionary-in-python
-# https://www.kite.com/python/answers/how-to-append-a-dictionary-to-a-list-in-python
-# https://www.pluralsight.com/guides/manipulating-lists-dictionaries-python
 # can replace ? with {} with format
 # w3 python string format
 # string format method
 # ^ TA Help
 # put placeholder into python data structure
+# https://www.w3schools.com/python/ref_string_format.asp
+# https://www.kite.com/python/answers/how-to-update-a-dictionary-in-python
+# https://www.kite.com/python/answers/how-to-append-a-dictionary-to-a-list-in-python
+# https://www.pluralsight.com/guides/manipulating-lists-dictionaries-python
+# https://www.geeksforgeeks.org/how-to-read-from-a-file-in-python/
+# https://stackoverflow.com/questions/12330522/how-to-read-a-file-without-newlines
+# https://www.w3schools.com/python/python_file_write.asp

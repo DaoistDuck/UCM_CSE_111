@@ -6,9 +6,6 @@ rm -f output/*
 score=0
 qnum=5
 
-javac Lab_7.java
-java -classpath ".:sqlite-jdbc-3.32.3.2.jar" Lab_7
-
 python3 Lab_7.py
 
 for (( i=1; i<=$qnum; i++ ))
