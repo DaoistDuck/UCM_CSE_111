@@ -22,6 +22,7 @@ def openConnection(_dbFile):
 
     return conn
 
+
 def closeConnection(_conn, _dbFile):
     print("++++++++++++++++++++++++++++++++++")
     print("Close database: ", _dbFile)
@@ -386,9 +387,9 @@ def main():
     # create a database connection
     conn = openConnection(database)
     with conn:
-        #dropTables(conn)
-        #createTables(conn)
-        #populateTables(conn)
+        # dropTables(conn)
+        # createTables(conn)
+        # populateTables(conn)
 
         pcsByMaker(conn, "E")
         productByMaker(conn, "Laptop", "E")

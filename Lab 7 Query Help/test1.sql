@@ -11,6 +11,8 @@ Finally, the w warehousekey value is set as an increasing number that is unique 
 
 */
 
+.headers on
+
 --This query does the 2nd line
 SELECT n_name, count(l_linenumber) as totalNum, n_nationkey
 FROM supplier, lineitem, customer, orders, nation
@@ -21,4 +23,28 @@ AND s_suppkey = l_suppkey
 AND s_name = "Supplier#000000001"
 GROUP BY n_name
 ORDER BY totalNum DESC, n_name ASC
-LIMIT 2
+LIMIT 2;
+
+SELECT n_name, s_name, TOTAL(p_size) as totalSize
+FROM part, supplier, customer, nation, lineitem, orders
+WHERE c_nationkey = n_nationkey
+AND c_custkey = o_custkey
+AND o_orderkey = l_orderkey
+AND s_suppkey = l_suppkey
+AND p_partkey = l_partkey
+AND s_name = "Supplier#000000001"
+GROUP BY n_name, s_name;
+
+WITH nTotal AS(
+SELECT n_name,  s_name, TOTAL(p_size) as totalSize
+FROM part, supplier, customer, nation, lineitem, orders
+WHERE c_nationkey = n_nationkey
+AND c_custkey = o_custkey
+AND o_orderkey = l_orderkey
+AND s_suppkey = l_suppkey
+AND p_partkey = l_partkey
+AND s_name = "Supplier#000000001"
+GROUP BY n_name, s_name
+)
+SELECT max(nTotal.totalSize) * 2 AS DoubleMaxTotalPartSize
+FROM nTotal;
