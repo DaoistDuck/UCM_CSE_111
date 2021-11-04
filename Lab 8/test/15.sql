@@ -1,5 +1,5 @@
 .eqp on
-
+--.expert
 select substr(o_orderdate, 1, 4) as year, count(*)
 from orders, nation, supplier, lineitem
 where l_orderkey = o_orderkey

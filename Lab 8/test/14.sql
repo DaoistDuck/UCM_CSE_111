@@ -1,5 +1,5 @@
-.eqp on
-
+.eqp on 
+--.expert
 select count(o_orderkey)
 from orders, customer, nation
 where c_custkey=o_custkey

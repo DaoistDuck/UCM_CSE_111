@@ -1,5 +1,5 @@
 .eqp on
-
+--.expert
 select sum(o_totalprice)
 from orders, customer, nation, region
 where o_custkey=c_custkey and

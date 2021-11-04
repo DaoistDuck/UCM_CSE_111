@@ -1,4 +1,4 @@
 .eqp on
-.expert
+--.expert
 select min(s_acctbal)
 from supplier;

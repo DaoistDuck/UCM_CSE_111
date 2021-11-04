@@ -1,5 +1,5 @@
 .eqp on
-
+--.expert
 select substr(l_receiptdate,1,7) as month, count(*)
 from lineitem, orders, customer
 where l_orderkey = o_orderkey and o_custkey = c_custkey

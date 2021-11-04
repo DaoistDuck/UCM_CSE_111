@@ -1,6 +1,6 @@
---EQP-- 0,0,2,SEARCH TABLE customer USING INDEX customer_idx_c_name (c_name=?)
---EQP-- 0,1,1,SEARCH TABLE orders USING AUTOMATIC COVERING INDEX (o_custkey=?)
---EQP-- 0,2,0,SEARCH TABLE lineitem USING AUTOMATIC COVERING INDEX (l_orderkey=?)
+--EQP-- 0,0,2,SEARCH TABLE customer USING COVERING INDEX customer_idx_c_name_c_custkey (c_name=?)
+--EQP-- 0,1,1,SEARCH TABLE orders USING COVERING INDEX orders_idx_o_custkey_o_orderkey (o_custkey=?)
+--EQP-- 0,2,0,SEARCH TABLE lineitem USING INDEX lineitem_idx_l_orderkey_l_suppkey (l_orderkey=?)
 --EQP-- 0,0,0,USE TEMP B-TREE FOR GROUP BY
 1993-01|3
 1993-02|4

@@ -1,5 +1,5 @@
 .eqp on
-
+--.expert
 select n_name, count(*) as cnt, max(s_acctbal)
 from supplier, nation 
 where s_nationkey = n_nationkey

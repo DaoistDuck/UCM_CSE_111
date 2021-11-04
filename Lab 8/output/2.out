@@ -1,4 +1,2 @@
-CREATE INDEX supplier_idx_459d2434 ON supplier(s_acctbal);
-
-0|0|0|SEARCH TABLE supplier USING COVERING INDEX supplier_idx_459d2434
-
+--EQP-- 0,0,0,SEARCH TABLE supplier USING COVERING INDEX supplier_idx_s_acctbal
+-966.2
