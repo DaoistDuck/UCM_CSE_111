@@ -1,0 +1,4 @@
+--EQP-- 0,0,0,SCAN TABLE orders
+--EQP-- 0,1,1,SEARCH TABLE customer USING AUTOMATIC COVERING INDEX (c_custkey=?)
+--EQP-- 0,2,2,SEARCH TABLE nation USING AUTOMATIC PARTIAL COVERING INDEX (n_name=? AND n_nationkey=?)
+86
