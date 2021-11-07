@@ -216,7 +216,7 @@ def Q2(_conn):
                     FROM nation, warehouse
                     WHERE w_nationkey = n_nationkey
                     GROUP BY n_name
-                    ORDER BY COUNT(w_warehousekey) DESC, n_name ASC"""
+                    ORDER BY COUNT(w_warehousekey) DESC, SUM(w_capacity) DESC, n_name ASC"""
         cursor = _conn.cursor()
         cursor.execute(sql)
         header = '{:<20} {:>10} {:>10}'.format(
