@@ -36,23 +36,25 @@ def dropViews(_conn):
     print("Dropping All Views")
 
     try:
-        sql = """DROP VIEW IF EXISTS Customer_Info;"""
+        sql = """DROP VIEW IF EXISTS V1;"""
         _conn.execute(sql)
 
-        sql = """DROP VIEW IF EXISTS Supplier_Info;"""
+        sql = """DROP VIEW IF EXISTS V2;"""
         _conn.execute(sql)
 
-        sql = """DROP VIEW IF EXISTS Orders_Info;"""
+        sql = """DROP VIEW IF EXISTS V5;"""
         _conn.execute(sql)
 
-        sql = """DROP VIEW IF EXISTS Min_Max_Discount;"""
+        sql = """DROP VIEW IF EXISTS V10;"""
         _conn.execute(sql)
 
-        sql = """DROP VIEW IF EXISTS Customer_Positive_Balance;"""
+        sql = """DROP VIEW IF EXISTS V151;"""
         _conn.execute(sql)
 
-        sql = """DROP VIEW IF EXISTS Supplier_Negative_Balance;"""
+        sql = """DROP VIEW IF EXISTS V152;"""
         _conn.execute(sql)
+
+        _conn.commit()
         print("success")
 
     except Error as e:
@@ -63,12 +65,14 @@ def create_View1(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Create V1")
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Customer_Info(c_custkey, c_name, c_address, c_phone, c_acctbal, c_mktsegment, c_comment, c_nation, c_region) AS
+        sql = """CREATE VIEW IF NOT EXISTS V1(c_custkey, c_name, c_address, c_phone, c_acctbal, c_mktsegment, c_comment, c_nation, c_region) AS
                 SELECT c_custkey, c_name, c_address, c_phone, c_acctbal, c_mktsegment, c_comment, n_name , r_name
                 FROM customer, nation, region
                 WHERE c_nationkey = n_nationkey AND n_regionkey = r_regionkey;"""
 
         _conn.execute(sql)
+
+        _conn.commit()
         print("success")
 
     except Error as e:
@@ -82,7 +86,7 @@ def create_View2(_conn):
     print("Create V2")
 
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Supplier_Info(s_suppkey, s_name, s_address, s_phone, s_acctbal, s_comment, s_nation, s_region) AS
+        sql = """CREATE VIEW IF NOT EXISTS V2(s_suppkey, s_name, s_address, s_phone, s_acctbal, s_comment, s_nation, s_region) AS
                 SELECT s_suppkey, s_name, s_address, s_phone, s_acctbal, s_comment, n_name, r_name
                 FROM supplier, nation, region
                 WHERE s_nationkey = n_nationkey AND n_regionkey = r_regionkey;"""
@@ -103,7 +107,7 @@ def create_View5(_conn):
     print("Create V5")
 
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Orders_Info(o_orderkey, o_custkey, o_orderstatus, o_totalprice, o_orderyear, o_orderpriority, o_clerk, o_shippriority, o_comment) AS
+        sql = """CREATE VIEW IF NOT EXISTS V5(o_orderkey, o_custkey, o_orderstatus, o_totalprice, o_orderyear, o_orderpriority, o_clerk, o_shippriority, o_comment) AS
                 SELECT o_orderkey, o_custkey, o_orderstatus, o_totalprice, o_orderdate, o_orderpriority, o_clerk, o_shippriority, o_comment
                 FROM orders;"""
 
@@ -123,7 +127,7 @@ def create_View10(_conn):
     print("Create V10")
 
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Min_Max_Discount(p_type, min_discount, max_discount) AS
+        sql = """CREATE VIEW IF NOT EXISTS V10(p_type, min_discount, max_discount) AS
                 SELECT p_type, min(l_discount), max(l_discount)
                 FROM part, lineitem
                 WHERE p_partkey = l_partkey
@@ -145,7 +149,7 @@ def create_View151(_conn):
     print("Create V151")
 
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Customer_Positive_Balance(c_custkey, c_name, c_nationkey, c_acctbal) AS
+        sql = """CREATE VIEW IF NOT EXISTS V151(c_custkey, c_name, c_nationkey, c_acctbal) AS
                 SELECT c_custkey, c_name, c_nationkey, c_acctbal
                 FROM customer
                 WHERE c_acctbal > 0;"""
@@ -166,7 +170,7 @@ def create_View152(_conn):
     print("Create V152")
 
     try:
-        sql = """CREATE VIEW IF NOT EXISTS Supplier_Negative_Balance(s_suppkey, s_name, s_nationkey, s_acctbal) AS
+        sql = """CREATE VIEW IF NOT EXISTS V152(s_suppkey, s_name, s_nationkey, s_acctbal) AS
                 SELECT s_suppkey, s_name, s_nationkey, s_acctbal
                 FROM supplier
                 WHERE s_acctbal < 0;"""
@@ -189,12 +193,12 @@ def Q1(_conn):
     Q1Output = open("output/1.out", "w")
 
     try:
-        sql = """SELECT Customer_Info.c_name, sum(o_totalprice)
-                FROM Customer_Info, orders
-                WHERE Customer_Info.c_custkey = o_custkey
-                AND Customer_Info.c_nation = 'FRANCE'
+        sql = """SELECT V1.c_name, sum(o_totalprice)
+                FROM V1, orders
+                WHERE V1.c_custkey = o_custkey
+                AND V1.c_nation = 'FRANCE'
                 AND o_orderdate like '1995-__-__'
-                group by Customer_Info.c_name;"""
+                group by V1.c_name;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -218,7 +222,7 @@ def Q1temp(_conn):
 
     try:
         sql = """SELECT *
-                FROM Customer_Info;"""
+                FROM V1;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -243,9 +247,9 @@ def Q2(_conn):
     Q2Output = open("output/2.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_region, count(*)
-                FROM Supplier_Info
-                GROUP BY Supplier_Info.s_region;"""
+        sql = """SELECT V2.s_region, count(*)
+                FROM V2
+                GROUP BY V2.s_region;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -268,11 +272,11 @@ def Q3(_conn):
     Q3Output = open("output/3.out", "w")
 
     try:
-        sql = """SELECT Customer_Info.c_nation, count(*)
-                FROM Customer_Info, orders
-                WHERE Customer_Info.c_custkey = o_custkey
-                AND Customer_Info.c_region = 'AMERICA'
-                GROUP BY Customer_Info.c_nation;"""
+        sql = """SELECT V1.c_nation, count(*)
+                FROM V1, orders
+                WHERE V1.c_custkey = o_custkey
+                AND V1.c_region = 'AMERICA'
+                GROUP BY V1.c_nation;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -295,13 +299,13 @@ def Q4(_conn):
     Q4Output = open("output/4.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_name, count(ps_partkey)
-                FROM Supplier_Info, partsupp, part
+        sql = """SELECT V2.s_name, count(ps_partkey)
+                FROM V2, partsupp, part
                 WHERE p_partkey = ps_partkey
-                AND ps_suppkey = Supplier_Info.s_suppkey
-                AND Supplier_Info.s_nation = 'CANADA'
+                AND ps_suppkey = V2.s_suppkey
+                AND V2.s_nation = 'CANADA'
                 AND p_size < 20
-                GROUP BY Supplier_Info.s_name;"""
+                GROUP BY V2.s_name;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -324,12 +328,12 @@ def Q5(_conn):
     Q5Output = open("output/5.out", "w")
 
     try:
-        sql = """SELECT Customer_Info.c_name, count(*)
-                FROM Customer_Info, Orders_Info
-                WHERE Orders_Info.o_custkey = Customer_Info.c_custkey
-                AND Customer_Info.c_nation = 'GERMANY'
-                AND Orders_Info.o_orderyear like '1993-__-__'
-                GROUP BY Customer_Info.c_name;"""
+        sql = """SELECT V1.c_name, count(*)
+                FROM V1, V5
+                WHERE V5.o_custkey = V1.c_custkey
+                AND V1.c_nation = 'GERMANY'
+                AND V5.o_orderyear like '1993-__-__'
+                GROUP BY V1.c_name;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -352,15 +356,15 @@ def Q6(_conn):
     Q6Output = open("output/6.out", "w")
 
     try:
-        sql = """SELECT s_name, Orders_Info.o_orderpriority, count(distinct ps_partkey)
-                FROM partsupp, Orders_Info, lineitem, supplier, nation
-                WHERE l_orderkey = Orders_Info.o_orderkey
+        sql = """SELECT s_name, V5.o_orderpriority, count(distinct ps_partkey)
+                FROM partsupp, V5, lineitem, supplier, nation
+                WHERE l_orderkey = V5.o_orderkey
                 AND l_partkey = ps_partkey
                 AND l_suppkey = ps_suppkey
                 AND ps_suppkey = s_suppkey
                 AND s_nationkey = n_nationkey
                 AND n_name = 'CANADA'
-                GROUP BY s_name, Orders_Info.o_orderpriority;"""
+                GROUP BY s_name, V5.o_orderpriority;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -383,11 +387,11 @@ def Q7(_conn):
     Q7Output = open("output/7.out", "w")
 
     try:
-        sql = """SELECT Customer_Info.c_nation, Orders_Info.o_orderstatus, count(*)
-                FROM Customer_Info, Orders_Info
-                WHERE Customer_Info.c_custkey = Orders_Info.o_custkey
-                AND Customer_Info.c_region = 'AMERICA'
-                GROUP BY Customer_Info.c_nation, Orders_Info.o_orderstatus;"""
+        sql = """SELECT V1.c_nation, V5.o_orderstatus, count(*)
+                FROM V1, V5
+                WHERE V1.c_custkey = V5.o_custkey
+                AND V1.c_region = 'AMERICA'
+                GROUP BY V1.c_nation, V5.o_orderstatus;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -410,13 +414,13 @@ def Q8(_conn):
     Q8Output = open("output/8.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_nation, count(distinct l_orderkey) as co
-                FROM Supplier_Info, Orders_Info, lineitem
-                WHERE Orders_Info.o_orderkey = l_orderkey
-                AND l_suppkey = Supplier_Info.s_suppkey
-                AND Orders_Info.o_orderstatus = 'F'
-                AND Orders_Info.o_orderyear like '1995-__-__'
-                GROUP BY Supplier_Info.s_nation
+        sql = """SELECT V2.s_nation, count(distinct l_orderkey) as co
+                FROM V2, V5, lineitem
+                WHERE V5.o_orderkey = l_orderkey
+                AND l_suppkey = V2.s_suppkey
+                AND V5.o_orderstatus = 'F'
+                AND V5.o_orderyear like '1995-__-__'
+                GROUP BY V2.s_nation
                 HAVING co > 50;"""
 
         cursor = _conn.cursor()
@@ -440,11 +444,11 @@ def Q9(_conn):
     Q9Output = open("output/9.out", "w")
 
     try:
-        sql = """SELECT count(distinct Orders_Info.o_clerk)
-                FROM Supplier_Info, Orders_Info, lineitem
-                WHERE Orders_Info.o_orderkey = l_orderkey
-                AND l_suppkey = Supplier_Info.s_suppkey
-                AND Supplier_Info.s_nation = 'UNITED STATES';"""
+        sql = """SELECT count(distinct V5.o_clerk)
+                FROM V2, V5, lineitem
+                WHERE V5.o_orderkey = l_orderkey
+                AND l_suppkey = V2.s_suppkey
+                AND V2.s_nation = 'UNITED STATES';"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -467,11 +471,11 @@ def Q10(_conn):
     Q10Output = open("output/10.out", "w")
 
     try:
-        sql = """SELECT Min_Max_Discount.p_type, Min_Max_Discount.min_discount, Min_Max_Discount.max_discount
-                FROM Min_Max_Discount
-                WHERE Min_Max_Discount.p_type like '%ECONOMY%'
-                AND Min_Max_Discount.p_type like '%COPPER%'
-                group by Min_Max_Discount.p_type;"""
+        sql = """SELECT V10.p_type, V10.min_discount, V10.max_discount
+                FROM V10
+                WHERE V10.p_type like '%ECONOMY%'
+                AND V10.p_type like '%COPPER%'
+                group by V10.p_type;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -494,9 +498,9 @@ def Q11(_conn):
     Q11Output = open("output/11.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_region, Supplier_Info.s_name, Supplier_Info.s_acctbal
-                FROM Supplier_Info
-                WHERE Supplier_Info.s_acctbal = (SELECT MAX(Supplier_Info2.s_acctbal) FROM Supplier_Info as Supplier_Info2 WHERE Supplier_Info2.s_region = Supplier_Info.s_region);"""
+        sql = """SELECT V2.s_region, V2.s_name, V2.s_acctbal
+                FROM V2
+                WHERE V2.s_acctbal = (SELECT MAX(V22.s_acctbal) FROM V2 as V22 WHERE V22.s_region = V2.s_region);"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -519,9 +523,9 @@ def Q12(_conn):
     Q12Output = open("output/12.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_nation, max(Supplier_Info.s_acctbal) as mb
-                FROM Supplier_Info
-                GROUP BY Supplier_Info.s_nation
+        sql = """SELECT V2.s_nation, max(V2.s_acctbal) as mb
+                FROM V2
+                GROUP BY V2.s_nation
                 HAVING mb > 9000;"""
 
         cursor = _conn.cursor()
@@ -546,12 +550,12 @@ def Q13(_conn):
 
     try:
         sql = """SELECT COUNT(*)
-                FROM Customer_Info, Supplier_Info, orders, lineitem
+                FROM V1, V2, orders, lineitem
                 WHERE o_orderkey = l_orderkey
-                AND o_custkey = Customer_Info.c_custkey
-                AND l_suppkey = Supplier_Info.s_suppkey
-                AND Supplier_Info.s_region = 'AFRICA'
-                AND Customer_Info.c_nation = 'UNITED STATES';"""
+                AND o_custkey = V1.c_custkey
+                AND l_suppkey = V2.s_suppkey
+                AND V2.s_region = 'AFRICA'
+                AND V1.c_nation = 'UNITED STATES';"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -574,12 +578,12 @@ def Q14(_conn):
     Q14Output = open("output/14.out", "w")
 
     try:
-        sql = """SELECT Supplier_Info.s_region, Customer_Info.c_region, max(o_totalprice)
-                FROM lineitem, Supplier_Info, orders, Customer_Info
-                WHERE l_suppkey = Supplier_Info.s_suppkey
+        sql = """SELECT V2.s_region, V1.c_region, max(o_totalprice)
+                FROM lineitem, V2, orders, V1
+                WHERE l_suppkey = V2.s_suppkey
                 AND l_orderkey = o_orderkey
-                AND o_custkey = Customer_Info.c_custkey
-                GROUP BY Supplier_Info.s_region, Customer_Info.c_region;"""
+                AND o_custkey = V1.c_custkey
+                GROUP BY V2.s_region, V1.c_region;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -603,10 +607,10 @@ def Q15(_conn):
 
     try:
         sql = """SELECT COUNT(DISTINCT l_orderkey)
-                FROM lineitem, Supplier_Negative_Balance, orders, Customer_Positive_Balance
-                WHERE l_suppkey = Supplier_Negative_Balance.s_suppkey
+                FROM lineitem, V152, orders, V151
+                WHERE l_suppkey = V152.s_suppkey
                 AND l_orderkey = o_orderkey
-                AND o_custkey = Customer_Positive_Balance.c_custkey;"""
+                AND o_custkey = V151.c_custkey;"""
 
         cursor = _conn.cursor()
         cursor.execute(sql)
@@ -631,7 +635,7 @@ def main():
         dropViews(conn)
         create_View1(conn)
         Q1(conn)
-        Q1temp(conn)
+        # Q1temp(conn)
 
         create_View2(conn)
         Q2(conn)
