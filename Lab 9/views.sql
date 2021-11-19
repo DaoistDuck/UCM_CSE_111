@@ -1,4 +1,4 @@
--- SQLite
+`-- SQLite
 .schema
 --1 view
 DROP VIEW IF EXISTS Customer_Info;

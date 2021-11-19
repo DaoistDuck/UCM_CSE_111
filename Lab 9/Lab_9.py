@@ -31,6 +31,34 @@ def closeConnection(_conn, _dbFile):
     print("++++++++++++++++++++++++++++++++++")
 
 
+def dropViews(_conn):
+    print("++++++++++++++++++++++++++++++++++")
+    print("Dropping All Views")
+
+    try:
+        sql = """DROP VIEW IF EXISTS Customer_Info;"""
+        _conn.execute(sql)
+
+        sql = """DROP VIEW IF EXISTS Supplier_Info;"""
+        _conn.execute(sql)
+
+        sql = """DROP VIEW IF EXISTS Orders_Info;"""
+        _conn.execute(sql)
+
+        sql = """DROP VIEW IF EXISTS Min_Max_Discount;"""
+        _conn.execute(sql)
+
+        sql = """DROP VIEW IF EXISTS Customer_Positive_Balance;"""
+        _conn.execute(sql)
+
+        sql = """DROP VIEW IF EXISTS Supplier_Negative_Balance;"""
+        _conn.execute(sql)
+        print("success")
+
+    except Error as e:
+        print(e)
+
+
 def create_View1(_conn):
     print("++++++++++++++++++++++++++++++++++")
     print("Create V1")
@@ -172,10 +200,35 @@ def Q1(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<10}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<10}|{:<10}".format(row[0], row[1])
             print(data)
-            Q1Output.write(data + '\n')
+            Q1Output.write(data + "\n")
+
+    except Error as e:
+        print(e)
+
+    print("++++++++++++++++++++++++++++++++++")
+
+
+def Q1temp(_conn):
+    print("++++++++++++++++++++++++++++++++++")
+    print("Q1temp")
+
+    Q1Output = open("output/1temp.out", "w")
+
+    try:
+        sql = """SELECT *
+                FROM Customer_Info;"""
+
+        cursor = _conn.cursor()
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        for row in rows:
+            data = "{:<2}|{:<10}|{:<10}|{:<10}|{:<5}|{:<5}|{:<10}|{:<5}|{:<10}".format(
+                row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]
+            )
+            print(data)
+            Q1Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -198,10 +251,9 @@ def Q2(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<12}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<12}|{:<10}".format(row[0], row[1])
             print(data)
-            Q2Output.write(data + '\n')
+            Q2Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -226,10 +278,9 @@ def Q3(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<15}|{:<10}".format(row[0], row[1])
             print(data)
-            Q3Output.write(data + '\n')
+            Q3Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -256,10 +307,9 @@ def Q4(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<15}|{:<10}".format(row[0], row[1])
             print(data)
-            Q4Output.write(data + '\n')
+            Q4Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -285,10 +335,9 @@ def Q5(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<15}|{:<10}".format(row[0], row[1])
             print(data)
-            Q5Output.write(data + '\n')
+            Q5Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -317,10 +366,9 @@ def Q6(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<15}|{:<10}'.format(
-                row[0], row[1], row[2])
+            data = "{:<15}|{:<15}|{:<10}".format(row[0], row[1], row[2])
             print(data)
-            Q6Output.write(data + '\n')
+            Q6Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -345,10 +393,9 @@ def Q7(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<13}|{:<1}|{:<5}'.format(
-                row[0], row[1], row[2])
+            data = "{:<13}|{:<1}|{:<5}".format(row[0], row[1], row[2])
             print(data)
-            Q7Output.write(data + '\n')
+            Q7Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -376,10 +423,9 @@ def Q8(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<15}|{:<10}".format(row[0], row[1])
             print(data)
-            Q8Output.write(data + '\n')
+            Q8Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -404,10 +450,9 @@ def Q9(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<10}'.format(
-                row[0])
+            data = "{:<10}".format(row[0])
             print(data)
-            Q9Output.write(data + '\n')
+            Q9Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -432,10 +477,9 @@ def Q10(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<25}|{:<1}|{:<10}'.format(
-                row[0], row[1], row[2])
+            data = "{:<25}|{:<1}|{:<10}".format(row[0], row[1], row[2])
             print(data)
-            Q10Output.write(data + '\n')
+            Q10Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -458,10 +502,9 @@ def Q11(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<12}|{:<10}|{:<10}'.format(
-                row[0], row[1], row[2])
+            data = "{:<12}|{:<10}|{:<10}".format(row[0], row[1], row[2])
             print(data)
-            Q11Output.write(data + '\n')
+            Q11Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -485,10 +528,9 @@ def Q12(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<15}|{:<10}'.format(
-                row[0], row[1])
+            data = "{:<15}|{:<10}".format(row[0], row[1])
             print(data)
-            Q12Output.write(data + '\n')
+            Q12Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -515,10 +557,9 @@ def Q13(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<10}'.format(
-                row[0])
+            data = "{:<10}".format(row[0])
             print(data)
-            Q13Output.write(data + '\n')
+            Q13Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -544,10 +585,9 @@ def Q14(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<12}|{:<12}|{:<10}'.format(
-                row[0], row[1], row[2])
+            data = "{:<12}|{:<12}|{:<10}".format(row[0], row[1], row[2])
             print(data)
-            Q14Output.write(data + '\n')
+            Q14Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -572,10 +612,9 @@ def Q15(_conn):
         cursor.execute(sql)
         rows = cursor.fetchall()
         for row in rows:
-            data = '{:<12}'.format(
-                row[0])
+            data = "{:<12}".format(row[0])
             print(data)
-            Q15Output.write(data + '\n')
+            Q15Output.write(data + "\n")
 
     except Error as e:
         print(e)
@@ -589,8 +628,10 @@ def main():
     # create a database connection
     conn = openConnection(database)
     with conn:
+        dropViews(conn)
         create_View1(conn)
         Q1(conn)
+        Q1temp(conn)
 
         create_View2(conn)
         Q2(conn)
@@ -621,5 +662,5 @@ def main():
     closeConnection(conn, database)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
