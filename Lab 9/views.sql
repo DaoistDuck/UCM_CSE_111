@@ -1,5 +1,4 @@
-`-- SQLite
-.schema
+-- SQLite
 --1 view
 DROP VIEW IF EXISTS Customer_Info;
 CREATE VIEW IF NOT EXISTS Customer_Info(c_custkey, c_name, c_address, c_phone, c_acctbal, c_mktsegment, c_comment, c_nation, c_region) AS
@@ -29,18 +28,25 @@ WHERE p_partkey = l_partkey
 GROUP BY p_type;
 
 --151 view
-DROP VIEW IF EXISTS Customer_Positive_Balance;
-CREATE VIEW IF NOT EXISTS Customer_Positive_Balance(c_custkey, c_name, c_nationkey, c_acctbal) AS
+DROP VIEW IF EXISTS V151;
+CREATE VIEW IF NOT EXISTS V151(c_custkey, c_name, c_nationkey, c_acctbal) AS
 SELECT c_custkey, c_name, c_nationkey, c_acctbal
 FROM customer
 WHERE c_acctbal > 0;
 
 --152 view
-DROP VIEW IF EXISTS Supplier_Negative_Balance;
-CREATE VIEW IF NOT EXISTS Supplier_Negative_Balance(s_suppkey, s_name, s_nationkey, s_acctbal) AS
+DROP VIEW IF EXISTS V152;
+CREATE VIEW IF NOT EXISTS V152(s_suppkey, s_name, s_nationkey, s_acctbal) AS
 SELECT s_suppkey, s_name, s_nationkey, s_acctbal
 FROM supplier
 WHERE s_acctbal < 0;
+
+
+select *
+FROM V151;
+
+select *
+FROM V152;
 
 --1 sql
 -- select c_name, sum(o_totalprice)
