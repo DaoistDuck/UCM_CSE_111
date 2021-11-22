@@ -193,7 +193,7 @@ def Q1(_conn):
     Q1Output = open("output/1.out", "w")
 
     try:
-        sql = """SELECT V1.c_name, sum(o_totalprice)
+        sql = """SELECT V1.c_name, ROUND(SUM(o_totalprice),2)
                 FROM V1, orders
                 WHERE V1.c_custkey = o_custkey
                 AND V1.c_nation = 'FRANCE'
