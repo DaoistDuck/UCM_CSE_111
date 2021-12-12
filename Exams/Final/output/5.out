@@ -1,0 +1,26 @@
+supReg                                   custReg                                       items
+AFRICA                                   AFRICA                                         2387
+AFRICA                                   AMERICA                                        2321
+AFRICA                                   ASIA                                           2254
+AFRICA                                   EUROPE                                         1998
+AFRICA                                   MIDDLE EAST                                    2534
+AMERICA                                  AFRICA                                         2401
+AMERICA                                  AMERICA                                        2147
+AMERICA                                  ASIA                                           2101
+AMERICA                                  EUROPE                                         1990
+AMERICA                                  MIDDLE EAST                                    2338
+ASIA                                     AFRICA                                         3140
+ASIA                                     AMERICA                                        3018
+ASIA                                     ASIA                                           2910
+ASIA                                     EUROPE                                         2665
+ASIA                                     MIDDLE EAST                                    3382
+EUROPE                                   AFRICA                                         2051
+EUROPE                                   AMERICA                                        1978
+EUROPE                                   ASIA                                           1939
+EUROPE                                   EUROPE                                         1768
+EUROPE                                   MIDDLE EAST                                    2138
+MIDDLE EAST                              AFRICA                                         1383
+MIDDLE EAST                              AMERICA                                        1301
+MIDDLE EAST                              ASIA                                           1265
+MIDDLE EAST                              EUROPE                                         1259
+MIDDLE EAST                              MIDDLE EAST                                    1420
