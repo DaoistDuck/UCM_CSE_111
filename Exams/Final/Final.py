@@ -192,8 +192,8 @@ def T5(_conn):
         nationname = nation
     # print(nationname)
     sql = """DELETE FROM lineitem
-            WHERE l_orderkey IN(
-            SELECT l_orderkey
+            WHERE l_suppkey IN(
+            SELECT l_suppkey
             FROM lineitem, supplier, nation
             WHERE l_suppkey = s_suppkey
             AND s_nationkey = n_nationkey
