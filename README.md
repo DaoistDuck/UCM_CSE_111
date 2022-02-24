@@ -1,2 +1,2 @@
 # UCM_CSE_111_Labs
- Database System
+This github repository has my code for my UCM CSE 111 Database Systems using primarily Python.
